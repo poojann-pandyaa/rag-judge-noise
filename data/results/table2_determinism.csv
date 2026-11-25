@@ -1,0 +1,8 @@
+judge,n_units,exact_match_all_4,max_abs_dd,label_agreement,krippendorff_alpha_T0
+qwen2.5-0.5b,431,1.0,0.0,1.0,1.0
+qwen2.5-1.5b,431,1.0,0.0,1.0,1.0
+qwen2.5-3b,431,1.0,0.0,1.0,1.0
+qwen2.5-7b,431,1.0,0.0,1.0,1.0
+llama3.2-1b,431,1.0,0.0,1.0,1.0
+llama3.2-3b,431,1.0,0.0,1.0,1.0
+llama3.1-8b,431,1.0,0.0,1.0,1.0

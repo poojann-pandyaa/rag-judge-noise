@@ -1,0 +1,17 @@
+{
+ "upstream": "https://github.com/primeqa/clapnq @ c508d78d8c5c2eecbf172fcf5f789004206e11fb",
+ "params": {
+  "n": 250,
+  "answerable_frac": 0.7,
+  "drop_gold_frac": 0.2,
+  "seed": 1234,
+  "out": "data"
+ },
+ "sha256": {
+  "clapnq_dev_answerable.jsonl": "3eefef4a3d4e34c0f7d2c2eceb9bde263bf43ee8edac1b4fe8d74f8b6a0bdfbe",
+  "clapnq_dev_unanswerable.jsonl": "a04f4fd625a68a521663d4c0e2b54c74c8067459adcb973a6111602fa54faaac",
+  "question_dev_answerable.tsv": "9088a1a75751150a7c96d119b98c44d4568c81e2282f3b628143e543233d75ca",
+  "passages.tsv.zip": "5a14f56f3dde373d7063a2ea904c7b831e9b18cdce02ed0085ad039a04798c50",
+  "eval_set.jsonl": "f942e2c3b5e4ca96e7f3f56aec9810dfc975daa3ddaffcdcf39d740759530381"
+ }
+}
