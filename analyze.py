@@ -16,11 +16,17 @@ import numpy as np
 
 import judge as J
 
-DATA, RES, FIG = Path("data"), Path("data/results"), Path("figures")
+import os
+# RJN_EXT=1: extended analysis = the original 7 judges + Qwen2.5-14B (4-bit), written to separate folders so the
+# original results (data/results, figures) are never touched.
+EXT = os.environ.get("RJN_EXT") == "1"
+DATA, RES, FIG = Path("data"), Path("data/results_ext" if EXT else "data/results"), Path("figures_ext" if EXT else "figures")
 # family, parameters in billions (from the model cards; includes embeddings)
 META = {"qwen2.5-0.5b": ("Qwen2.5", 0.494), "qwen2.5-1.5b": ("Qwen2.5", 1.54), "qwen2.5-3b": ("Qwen2.5", 3.09),
         "qwen2.5-7b": ("Qwen2.5", 7.62), "llama3.2-1b": ("Llama", 1.24), "llama3.2-3b": ("Llama", 3.21),
         "llama3.1-8b": ("Llama", 8.03)}
+if EXT:
+    META["qwen2.5-14b-4bit"] = ("Qwen2.5", 14.7)
 KINDS, TEMPS, NS = J.KINDS, J.TEMPS, len(J.SEEDS)
 PT = 0.3  # primary temperature
 KI = {k: i for i, k in enumerate(KINDS)}
@@ -193,8 +199,8 @@ def run(args):
     print("judges with data:", judges)
 
     # Table 1: roster
-    pd.DataFrame([dict(judge=j, family=META[j][0], params_B=META[j][1], hf_repo=J.ROSTER[j][0], revision=J.ROSTER[j][1],
-                       quant="8-bit MLX") for j in META]).to_csv(RES / "table1_roster.csv", index=False)
+    pd.DataFrame([dict(judge=j, family=META[j][0], params_B=META[j][1], hf_repo=J.ALL_JUDGES[j][0], revision=J.ALL_JUDGES[j][1],
+                       quant="4-bit MLX" if j.endswith("4bit") else "8-bit MLX") for j in META]).to_csv(RES / "table1_roster.csv", index=False)
 
     # descriptives
     rows = []

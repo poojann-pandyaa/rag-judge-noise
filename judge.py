@@ -29,6 +29,13 @@ ROSTER = {  # 8-bit MLX conversions, pinned by revision. Same quantization for e
     "qwen2.5-7b": ("mlx-community/Qwen2.5-7B-Instruct-8bit", "df11cb390bd674c24a9ddedf19f05bc09f6e0148"),
     "llama3.1-8b": ("mlx-community/Meta-Llama-3.1-8B-Instruct-8bit", "142d428004044c37c441272c91316251d9aecc58"),
 }
+# Bigger-judge confirmation run. 4-bit because the 8-bit 14B (15.7 GB) does not fit in 16 GB of RAM; the 4-bit 7B is a
+# control that separates "bigger" from "4-bit". Kept out of ROSTER so the original 7-judge analysis is unchanged.
+EXTRA = {
+    "qwen2.5-14b-4bit": ("mlx-community/Qwen2.5-14B-Instruct-4bit", "dad510143ae5cdb1466778bde3161460f9e9f604"),
+    "qwen2.5-7b-4bit": ("mlx-community/Qwen2.5-7B-Instruct-4bit", "c26a38f6a37d0a51b4e9a1eb3026530fa35d9fed"),
+}
+ALL_JUDGES = {**ROSTER, **EXTRA}
 TEMPS, SEEDS = (0.3, 0.7, 1.0), range(10)
 KINDS = ("faith", "rel", "prec", "rec", "corr", "abst")
 ABSTAIN_FRAGMENT = "cannot answer this from the provided passages"
@@ -108,7 +115,7 @@ class Judge:
         import mlx.core as mx
         from huggingface_hub import snapshot_download
         from mlx_lm import load
-        repo, rev = ROSTER[name]
+        repo, rev = ALL_JUDGES[name]
         self.mx, self.name = mx, name
         mx.set_cache_limit(512 * 1024 * 1024)  # RAM is tight (16 GB shared); the OS was killing us (Killed: 9)
         self.model, self.tok = load(snapshot_download(
@@ -229,7 +236,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["selftest", "run", "summary"])
     ap.add_argument("path", nargs="?")
-    ap.add_argument("--judge", choices=list(ROSTER))
+    ap.add_argument("--judge", choices=list(ALL_JUDGES))
     ap.add_argument("--variants", default="0,1,2,3")
     ap.add_argument("--n", type=int, default=0, help="only first N items (0 = all)")
     ap.add_argument("--det-n", type=int, default=100, help="items in the T=0 determinism repeats (0 = skip)")

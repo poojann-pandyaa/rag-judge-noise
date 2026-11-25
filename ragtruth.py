@@ -13,7 +13,9 @@ Test split only, quality == 'good', half the responses contain a hallucination, 
 import argparse, json, random, re, sys, time
 from pathlib import Path
 
+import os
 import judge as J
+EXT = os.environ.get("RJN_EXT") == "1"  # include the bigger/control judges; write to data/results_ext
 
 DATA = Path("data")
 RAW = DATA / "raw" / "ragtruth"
@@ -76,7 +78,7 @@ def report():
     from sklearn.metrics import roc_auc_score
     units = {(u["id"], u["unit"]): u for u in map(json.loads, (DATA / "ragtruth_eval.jsonl").read_text().splitlines())}
     rows = []
-    for j in J.ROSTER:
+    for j in (J.ALL_JUDGES if EXT else J.ROSTER):
         p = J.OUT / f"ragtruth_{j}.jsonl"
         if not p.exists():
             continue
@@ -95,7 +97,8 @@ def report():
                          sentence_AUC=roc_auc_score(sup, d), sentence_balanced_acc=0.5 * (tpr + tnr),
                          recall_of_hallucinations=tnr, supported_yes_rate=float(y.mean()),
                          response_AUC=roc_auc_score(rc, rd), n_responses=len(rid)))
-    df = pd.DataFrame(rows); df.to_csv(DATA / "results" / "ragtruth_validity.csv", index=False)
+    out_dir = DATA / ("results_ext" if EXT else "results"); out_dir.mkdir(exist_ok=True)
+    df = pd.DataFrame(rows); df.to_csv(out_dir / "ragtruth_validity.csv", index=False)
     print(df.round(3).to_string(index=False))
 
 
@@ -112,7 +115,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["selftest", "prepare", "run", "report"])
     ap.add_argument("--n", type=int, default=150)
-    ap.add_argument("--judge", choices=list(J.ROSTER) + ["all"])
+    ap.add_argument("--judge", choices=list(J.ALL_JUDGES) + ["all"])
     a = ap.parse_args()
     {"selftest": selftest, "prepare": lambda: prepare(a.n), "report": report,
      "run": lambda: [run(j) for j in (J.ROSTER if a.judge == "all" else [a.judge])]}[a.cmd]()

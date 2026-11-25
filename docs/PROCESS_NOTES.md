@@ -22,6 +22,15 @@ Notes on how the experiment was run, kept out of the article so that the article
   batch sizes 32 and 96 changed 4 of 96 margins by one bf16 step (0.0156). Only the 0.5B judge was stress-tested.
 * `python3 examples/judge_margin_demo.py` reproduces the study harness's margin exactly on the same prompt (12.0781 for the Qwen2.5-1.5B example).
 
+## Bigger-judge check (25-26 November 2026)
+
+* Qwen2.5-14B-Instruct-4bit and a Qwen2.5-7B-Instruct-4bit control, revisions pinned in `judge.py` (`EXTRA`). The 8-bit 14B (15.7 GB) does not fit in 16 GB of RAM.
+* Pass/fail criteria were written into `confirm_big.py` before any of these judgments existed. Driver: `sweep_big.sh` (about 13 hours; no failures or retries).
+* Both new judges have the full 9,881 + 1,092 records with no duplicates. Results are written to `data/results_ext/`; `data/results/` and `figures/` are untouched.
+  For the original seven judges every point estimate is unchanged. Some bootstrap interval bounds in the extended tables differ by up to about 0.01,
+  because the extra judge shifts the shared random-number stream. The RAGTruth AUC intervals are identical.
+* Outcome: all four findings held, and the 4-bit effect was small by the pre-set rule. See `data/results_ext/confirmation.md`.
+
 ## Known gaps
 
 The three alternative rubric wordings were written by the author and checked only by embedding similarity (minimum cosine 0.826 to the base rubric); no human check of equivalence was done.
