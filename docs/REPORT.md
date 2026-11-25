@@ -164,7 +164,7 @@ Spearman correlations of per-item scores (T = 0 base wording) between the six LL
 | qwen2.5-7b | **0.795** | 0.75–0.83 | 0.76 | **0.71** | |
 | llama3.2-1b | 0.498 | 0.43–0.57 | 0.59 | 0.49 | chance level |
 | llama3.2-3b | 0.657 | 0.60–0.71 | 0.66 | 0.55 | flags 98 % of hallucinations but only 11 % of supported sentences are passed |
-| llama3.1-8b | 0.761 | 0.72–0.80 | 0.76 | 0.70 | |
+| llama3.1-8b | 0.761 | 0.71–0.80 | 0.76 | 0.70 | |
 
 Note how the AUC (ranking) can be decent while the 0-threshold decision is not (0.5B/1.5B Qwen: AUC 0.70–0.73 but balanced accuracy ≈ 0.55) — the T=0 verdict depends on an uncalibrated threshold.
 
